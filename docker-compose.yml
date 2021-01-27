@@ -1,0 +1,72 @@
+version: "3"
+services:
+  db:
+    image: postgres:12
+    environment:
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - ./db:/docker-entrypoint-initdb.d
+      - ./db-data:/var/lib/postgresql/data
+  domain1:
+    image: digitalasset/canton-community:0.20.0
+    depends_on: [ db ]
+    volumes:
+      - ./shared:/shared
+      - ./domain1:/domain1
+    environment:
+      - PUBLIC_API_PORT=3000
+      - ADMIN_API_PORT=3001
+    command: daemon --config /domain1/canton.conf
+    ports:
+      - 3001:3001
+  domain2:
+    image: digitalasset/canton-community:0.20.0
+    depends_on: [ db ]
+    volumes:
+      - ./shared:/shared
+      - ./domain2:/domain2
+    environment:
+      - PUBLIC_API_PORT=3010
+      - ADMIN_API_PORT=3011
+    command: daemon --config /domain2/canton.conf
+    ports:
+      - 3011:3011
+  participant1:
+    image: digitalasset/canton-community:0.20.0
+    depends_on: [ db, domain1 ]
+    volumes:
+      - ./shared:/shared
+      - ./participant1:/participant1
+    environment:
+      - PUBLIC_API_PORT=4000
+      - ADMIN_API_PORT=4001
+    command: daemon --config /participant1/canton.conf --bootstrap /participant1/bootstrap.canton
+    ports:
+      - 4000:4000
+      - 4001:4001
+  participant2:
+    image: digitalasset/canton-community:0.20.0
+    depends_on: [ db, domain1, domain2 ]
+    volumes:
+      - ./shared:/shared
+      - ./participant2:/participant2
+    environment:
+      - PUBLIC_API_PORT=4010
+      - ADMIN_API_PORT=4011
+    command: daemon --config /participant2/canton.conf --bootstrap /participant2/bootstrap.canton
+    ports:
+      - 4010:4010
+      - 4011:4011
+  participant3:
+    image: digitalasset/canton-community:0.20.0
+    depends_on: [ db, domain2 ]
+    volumes:
+      - ./shared:/shared
+      - ./participant3:/participant3
+    environment:
+      - PUBLIC_API_PORT=4020
+      - ADMIN_API_PORT=4021
+    command: daemon --config /participant3/canton.conf --bootstrap /participant3/bootstrap.canton
+    ports:
+      - 4020:4020
+      - 4021:4021
