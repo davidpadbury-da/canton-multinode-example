@@ -8,7 +8,7 @@ services:
       - ./db:/docker-entrypoint-initdb.d
       - ./db-data:/var/lib/postgresql/data
   domain1:
-    image: digitalasset/canton-community:0.20.0
+    image: digitalasset/canton-community:0.22.0
     depends_on: [ db ]
     volumes:
       - ./shared:/shared
@@ -20,7 +20,7 @@ services:
     ports:
       - 3001:3001
   domain2:
-    image: digitalasset/canton-community:0.20.0
+    image: digitalasset/canton-community:0.22.0
     depends_on: [ db ]
     volumes:
       - ./shared:/shared
@@ -32,7 +32,7 @@ services:
     ports:
       - 3011:3011
   participant1:
-    image: digitalasset/canton-community:0.20.0
+    image: digitalasset/canton-community:0.22.0
     depends_on: [ db, domain1 ]
     volumes:
       - ./shared:/shared
@@ -45,7 +45,7 @@ services:
       - 4000:4000
       - 4001:4001
   participant2:
-    image: digitalasset/canton-community:0.20.0
+    image: digitalasset/canton-community:0.22.0
     depends_on: [ db, domain1, domain2 ]
     volumes:
       - ./shared:/shared
@@ -58,7 +58,7 @@ services:
       - 4010:4010
       - 4011:4011
   participant3:
-    image: digitalasset/canton-community:0.20.0
+    image: digitalasset/canton-community:0.22.0
     depends_on: [ db, domain2 ]
     volumes:
       - ./shared:/shared

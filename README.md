@@ -45,7 +45,7 @@ The nodes expose an admin-api and canton itself can be used as a client to perfo
 [`remote.conf`](./remote.conf) contains configuration to point a local client at these remote nodes. We can launch a canton container with this config to start an interactive console using:
 
 ```sh
-docker run --network host -it --rm -v "$PWD/remote.conf:/canton/remote.conf" digitalasset/canton-community:0.20.0 --config /canton/remote.conf
+docker run --network host -it --rm -v "$PWD/remote.conf:/canton/remote.conf" digitalasset/canton-community:0.22.0 --config /canton/remote.conf
 ```
 
 The commands that can be run within the console documented in the [Canton Console section of the canton user manual](https://www.canton.io/docs/stable/user-manual/usermanual/console.html). Here we demonstrate adding a new party to participant1:
@@ -64,4 +64,7 @@ The commands that can be run within the console documented in the [Canton Consol
 
 @ participant1.parties.enable("alice")
 res0: PartyId = alice::1220045b...
+
+@ participant1.health.ping(participant2)
+res2: concurrent.duration.Duration = 478 milliseconds
 ```
